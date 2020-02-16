@@ -43,8 +43,8 @@ gem 'devise_token_auth'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'rubocop', require: false
   gem 'rubocop-rspec', require: false
+  gem 'rubocop-rails', require: false
   gem 'pry-byebug'
   gem 'pry-rails'
   gem 'pry-doc'
