@@ -13,3 +13,37 @@ executors:
         environment:
           MYSQL_ALLOW_EMPTY_PASSWORD: true
     working_directory: ~/qiita_clone
+
+commands:
+  install_bundler:
+    description: Bundler install
+    steps:
+      - run: gem install bundler -v 2.1.4
+
+jobs:
+  fetch_source_code:
+    executor:
+      name: default_container
+    steps:
+      - checkout
+      - save_cache:
+          key: v1-qiita_clone-{{ .Environment.CIRCLE_SHA1 }}
+          paths:
+            - ~/qiita_clone
+  bundle_dependencies:
+    executor:
+      name: default_container
+    steps:
+      - restore_cache:
+          key: v1-qiita_clone-{{ .Environment.CIRCLE_SHA1 }}
+      - restore_cache:
+          key: v2-dependencies-{{ checksum "Gemfile.lock" }}
+      - install_bundler
+      - run:
+          name: Bundle Install Dependencies
+          command: |
+            bundle install
+      - save_cache:
+          key: v2-dependencies-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
