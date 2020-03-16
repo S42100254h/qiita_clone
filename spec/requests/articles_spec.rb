@@ -13,7 +13,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
       res = JSON.parse(response.body)
       expect(res.length).to eq 3
       expect(res[0].keys).to eq ["id", "title", "body", "user"]
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
   end
 end
