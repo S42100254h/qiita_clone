@@ -42,4 +42,20 @@ RSpec.describe "Api::V1::Articles", type: :request do
       end
     end
   end
+
+  describe "POST /api/v1/articles" do
+    subject { post(api_v1_articles_path, params: params) }
+
+    before do
+      allow_any_instance_of(Api::V1::ApiController).to receive(:current_user).and_return(current_user)
+    end
+
+    let(:params) { { article: attributes_for(:article) } }
+    let(:current_user) { create(:user) }
+
+    it "current_userに紐づけられた記事を作成できる" do
+      expect { subject }.to change { Article.where(user_id: current_user.id).count }.by(1)
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end
