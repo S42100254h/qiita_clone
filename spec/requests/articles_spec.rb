@@ -58,4 +58,23 @@ RSpec.describe "Api::V1::Articles", type: :request do
       expect(response).to have_http_status(:ok)
     end
   end
+
+  describe "PATCH /api/v1/articles/:id" do
+    subject { patch(api_v1_article_path(article.id), params: params) }
+        
+    before do
+      allow_any_instance_of(Api::V1::ApiController).to receive(:current_user).and_return(current_user)
+    end
+        
+    let(:params) { { article: { title: Faker::Lorem.characters(number: Random.new.rand(1..50)), created_at: Time.current } } }
+    let(:article) { create(:article, user: current_user) }
+    let(:current_user) { create(:user) }
+        
+    it "current_userに紐づけられた記事を更新できる" do
+      expect { subject }.to change { Article.find(article.id).title }.from(article.title).to(params[:article][:title]) &
+                            not_change { Article.find(article.id).body } &
+                            not_change { Article.find(article.id).created_at }
+      expect(response).to have_http_status(:ok)
+    end
+  end
 end
