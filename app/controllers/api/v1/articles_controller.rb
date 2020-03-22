@@ -27,6 +27,7 @@ class Api::V1::ArticlesController < Api::V1::ApiController
   end
 
   private
+
     def set_article
       @article = current_user.articles.find(params[:id])
     end
