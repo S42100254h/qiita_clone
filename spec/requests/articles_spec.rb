@@ -54,7 +54,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
     let(:current_user) { create(:user) }
 
     it "current_userに紐づけられた記事を作成できる" do
-      expect { subject }.to change { Article.where(user_id: current_user.id).count }.by(1)
+      expect { subject }.to change { current_user.articles.count }.by(1)
       expect(response).to have_http_status(:ok)
     end
   end
@@ -71,9 +71,9 @@ RSpec.describe "Api::V1::Articles", type: :request do
     let(:current_user) { create(:user) }
 
     it "current_userに紐づけられた記事を更新できる" do
-      expect { subject }.to change { Article.find(article.id).title }.from(article.title).to(params[:article][:title]) &
-                            not_change { Article.find(article.id).body } &
-                            not_change { Article.find(article.id).created_at }
+      expect { subject }.to change { article.reload.title }.from(article.title).to(params[:article][:title]) &
+                            not_change { article.reload.body } &
+                            not_change { article.reload.created_at }
       expect(response).to have_http_status(:ok)
     end
   end
@@ -89,7 +89,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
     let(:current_user) { create(:user) }
 
     it "current_userに紐づけられた記事を削除できる" do
-      expect { subject }.to change { Article.where(user_id: current_user.id).count }.by(-1)
+      expect { subject }.to change { current_user.articles.count }.by(-1)
       expect(response).to have_http_status(:ok)
     end
   end
