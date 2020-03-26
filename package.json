@@ -2,7 +2,15 @@
   "name": "qiita_clone",
   "private": true,
   "dependencies": {
-    "@rails/webpacker": "4.2.2"
+    "@rails/webpacker": "4.2.2",
+    "axios": "^0.19.2",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3",
+    "vue": "^2.6.11",
+    "vue-loader": "^15.9.1",
+    "vue-property-decorator": "^8.4.1",
+    "vue-router": "^3.1.6",
+    "vue-template-compiler": "^2.6.11"
   },
   "devDependencies": {
     "webpack-dev-server": "^3.10.3"
