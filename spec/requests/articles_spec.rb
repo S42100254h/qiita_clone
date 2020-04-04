@@ -62,7 +62,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
     let(:params) { { article: { title: Faker::Lorem.characters(number: Random.new.rand(1..50)), created_at: Time.current } } }
     let(:article) { create(:article, user: current_user) }
     let(:current_user) { create(:user) }
-    let(:headers) { current_user.create_new_auth_token}
+    let(:headers) { current_user.create_new_auth_token }
 
     it "current_userに紐づけられた記事を更新できる" do
       expect { subject }.to change { article.reload.title }.from(article.title).to(params[:article][:title]) &
