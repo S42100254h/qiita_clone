@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "Api::V1::Auth::Registrations", type: :request do
   describe "POST /api/v1/auth" do
@@ -26,7 +26,7 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
         expect(headers["uid"]).to be nil
         expect(headers["client"]).to be nil
         expect(headers["access-token"]).to be nil
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
 
@@ -39,10 +39,10 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
         expect(headers["uid"]).to be nil
         expect(headers["client"]).to be nil
         expect(headers["access-token"]).to be nil
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
-  
+
     context "nameがnilの場合" do
       let(:params) { attributes_for(:user, name: nil) }
 
@@ -52,7 +52,7 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
         expect(headers["uid"]).to be nil
         expect(headers["client"]).to be nil
         expect(headers["access-token"]).to be nil
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
 
@@ -65,7 +65,7 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
         expect(headers["uid"]).to be nil
         expect(headers["client"]).to be nil
         expect(headers["access-token"]).to be nil
-        expect(response).to have_http_status(422)
+        expect(response).to have_http_status(:unprocessable_entity)
       end
     end
   end
@@ -93,7 +93,7 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
 
       it "ログインできない" do
         subject
-        expect(response).to have_http_status(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
@@ -103,7 +103,7 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
 
       it "ログインできない" do
         subject
-        expect(response).to have_http_status(401)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
   end
@@ -111,7 +111,7 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
   describe "DELETE /api/v1/auth/sign_out" do
     subject { delete(destroy_api_v1_user_session_path, headers: headers) }
 
-    context "正しい情報が送られたとき"do
+    context "正しい情報が送られたとき" do
       let!(:user) { create(:user) }
       let(:headers) { user.create_new_auth_token }
 
