@@ -107,4 +107,22 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
       end
     end
   end
+
+  describe "DELETE /api/v1/auth/sign_out" do
+    subject { delete(destroy_api_v1_user_session_path, headers: headers) }
+
+    context "正しい情報が送られたとき"do
+      let!(:user) { create(:user) }
+      let(:headers) { user.create_new_auth_token }
+
+      it "ログアウトできる" do
+        subject
+        headers = response.headers
+        expect(headers["uid"]).to be nil
+        expect(headers["client"]).to be nil
+        expect(headers["access-token"]).to be nil
+        expect(response).to have_http_status(:ok)
+      end
+    end
+  end
 end
