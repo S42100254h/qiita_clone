@@ -78,4 +78,4 @@ export default class Header extends Vue {
 .login {
   font-weight: bold;
 }
-</style> 
+</style>
