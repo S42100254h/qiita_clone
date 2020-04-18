@@ -1,6 +1,15 @@
 <template>
   <form>
     <v-text-field
+      v-model="account"
+      v-validate="'required|max:10'"
+      :counter="10"
+      :error-messages="errors.collect('account')"
+      label="アカウント名"
+      data-vv-name="account"
+      required
+    ></v-text-field>
+    <v-text-field
       v-model="name"
       v-validate="'required|max:10'"
       :counter="10"
@@ -45,6 +54,7 @@ export default class RegisterContainer extends Vue {
   $_veeValidate: {
     validator: "new";
   };
+  account: string = "";
   name: string = "";
   email: string = "";
   show: boolean = false;
@@ -67,6 +77,7 @@ export default class RegisterContainer extends Vue {
     // this.$validator.validateAll();
 
     const params = {
+      account: this.account,
       name: this.name,
       email: this.email,
       password: this.password
@@ -88,6 +99,7 @@ export default class RegisterContainer extends Vue {
       });
   }
   // clear() {
+  //   this.account = "";
   //   this.name = "";
   //   this.email = "";
   //   this.password = "";
