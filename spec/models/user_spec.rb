@@ -12,14 +12,6 @@ RSpec.describe User, type: :model do
 
   describe "異常系テスト" do
     describe "accountについて" do
-      context "accountを入力していないとき" do
-        let(:user) { build(:user, account: nil) }
-        it "エラーする" do
-          user.valid?
-          expect(user.errors.messages[:account]).to include "can't be blank"
-        end
-      end
-
       context "accountが51字以上のとき" do
         let(:user) { build(:user, account: "a" * 51) }
         it "エラーする" do

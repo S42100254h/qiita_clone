@@ -30,19 +30,6 @@ RSpec.describe "Api::V1::Auth::Registrations", type: :request do
       end
     end
 
-    context "accountがnilの場合" do
-      let(:params) { attributes_for(:user, account: nil) }
-
-      it "ユーザー登録できない" do
-        expect { subject }.to change { User.count }.by(0)
-        headers = response.headers
-        expect(headers["uid"]).to be nil
-        expect(headers["client"]).to be nil
-        expect(headers["access-token"]).to be nil
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
-    end
-
     context "nameがnilの場合" do
       let(:params) { attributes_for(:user, name: nil) }
 
