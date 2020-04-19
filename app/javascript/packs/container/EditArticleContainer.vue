@@ -38,10 +38,6 @@ const headers = {
 export default class ArticlesContainer extends Vue {
   title: string = "";
   body: string = "";
-  async createArticle(): Promise<void> {
-    const params = {
-      title: this.title,
-      body: this.body
 
   async created(): Promise<void> {
     const renderer = new marked.Renderer();
@@ -62,21 +58,28 @@ export default class ArticlesContainer extends Vue {
       langPrefix: ""
     });
   }
+
   get compiledMarkdown() {
     return function(text: string) {
       return marked(text);
     };
   }
-    };
-  await axios
-      .post("/api/v1/articles", params, headers)
-      .then(_response => {
-        Router.push("/");
-      })
-      .catch(e => {
-        // TODO: 適切な Error 表示
-        alert(e.response.data.errors);
-      });
+
+    async createArticle(): Promise<void> {
+      const params = {
+        title: this.title,
+        body: this.body
+      };
+
+      await axios
+        .post("/api/v1/articles", params, headers)
+        .then(_response => {
+          Router.push("/");
+        })
+        .catch(e => {
+          // TODO: 適切な Error 表示
+          alert(e.response.data.errors);
+        });
   }
 }
 </script>
