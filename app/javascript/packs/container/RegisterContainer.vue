@@ -1,15 +1,6 @@
 <template>
   <form>
     <v-text-field
-      v-model="account"
-      v-validate="'required|max:10'"
-      :counter="10"
-      :error-messages="errors.collect('account')"
-      label="アカウント名"
-      data-vv-name="account"
-      required
-    ></v-text-field>
-    <v-text-field
       v-model="name"
       v-validate="'required|max:10'"
       :counter="10"
