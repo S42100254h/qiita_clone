@@ -4,8 +4,17 @@ RSpec.describe Article, type: :model do
   describe "正常系テスト" do
     context "title, body が入力されている" do
       let(:article) { build(:article) }
-      it "記事が作られる" do
+      it "記事（ステータス：下書き）が作られる" do
         expect(article.valid?).to eq true
+        expect(article.status).to eq "draft"
+      end
+    end
+
+    context "title, bodyが入力されている & ステータスが公開" do
+      let(:article) { build(:article, status: "published") }
+      it "記事（ステータス：公開）が作られる" do
+        expect(article.valid?).to eq true
+        expect(article.status).to eq "published"
       end
     end
   end
