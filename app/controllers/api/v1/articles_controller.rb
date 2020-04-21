@@ -3,7 +3,7 @@ class Api::V1::ArticlesController < Api::V1::ApiController
   before_action :authenticate_user!, only: [:create, :update, :destroy]
 
   def index
-    articles = Article.all
+    articles = Article.where(status: "published")
     render json: articles
   end
 
