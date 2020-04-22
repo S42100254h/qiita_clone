@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Article, type: :model do
   describe "正常系テスト" do
     context "title, body が入力されている" do
-      let(:article) { build(:article) }
+      let(:article) { build(:article, status: "draft") }
       it "記事（ステータス：下書き）が作られる" do
         expect(article.valid?).to eq true
         expect(article.status).to eq "draft"
