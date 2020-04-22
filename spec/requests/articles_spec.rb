@@ -21,7 +21,7 @@ RSpec.describe "Api::V1::Articles", type: :request do
   describe "GET /api/v1/articles/:id" do
     subject { get(api_v1_article_path(article_id)) }
 
-    context "指定したidの記事が存在する場合" do
+    context "指定したidの記事（ステータスが公開）が存在する場合" do
       let(:article) { create(:article) }
       let(:article_id) { article.id }
 
@@ -32,12 +32,22 @@ RSpec.describe "Api::V1::Articles", type: :request do
         expect(res["title"]).to eq article.title
         expect(res["body"]).to eq article.body
         expect(res["updated_at"]).to be_present
+        expect(res["status"]).to eq "published"
         expect(response).to have_http_status(:ok)
       end
     end
 
     context "指定したidの記事が存在しない場合" do
       let(:article_id) { 11111 }
+
+      it "記事を取得できない" do
+        expect { subject }.to raise_error ActiveRecord::RecordNotFound
+      end
+    end
+
+    context "指定したidの記事のステータスが下書きである場合" do
+      let(:article) { create(:article, status: "draft") }
+      let(:article_id) { article.id }
 
       it "記事を取得できない" do
         expect { subject }.to raise_error ActiveRecord::RecordNotFound
