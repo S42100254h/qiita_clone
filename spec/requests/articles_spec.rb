@@ -58,13 +58,28 @@ RSpec.describe "Api::V1::Articles", type: :request do
   describe "POST /api/v1/articles" do
     subject { post(api_v1_articles_path, params: params, headers: headers) }
 
-    let(:params) { { article: attributes_for(:article) } }
-    let(:current_user) { create(:user) }
-    let(:headers) { current_user.create_new_auth_token }
+    context "current_userに紐づけられた記事（ステータスが公開）を作成する場合" do
+      let(:params) { { article: attributes_for(:article, status: "published") } }
+      let(:current_user) { create(:user) }
+      let(:headers) { current_user.create_new_auth_token }
 
-    it "current_userに紐づけられた記事を作成できる" do
-      expect { subject }.to change { current_user.articles.count }.by(1)
-      expect(response).to have_http_status(:ok)
+      it "公開記事を作成できる" do
+        expect { subject }.to change { current_user.articles.published.count }.by(1) &
+                              change { current_user.articles.draft.count }.by(0)
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "current_userに紐づけられた記事（ステータスが下書き）を作成する場合" do
+      let(:params) { { article: attributes_for(:article, status: "draft") } }
+      let(:current_user) { create(:user) }
+      let(:headers) { current_user.create_new_auth_token }
+
+      it "下書き記事を作成できる" do
+        expect { subject }.to change { current_user.articles.published.count }.by(0) &
+                              change { current_user.articles.draft.count }.by(1)
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
 
