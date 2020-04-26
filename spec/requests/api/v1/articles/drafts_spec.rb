@@ -24,7 +24,7 @@ RSpec.describe "Api::V1::Articles::Drafts", type: :request do
     end
   end
 
-  describe "GET /api/v1/articles/drafts:id" do
+  describe "GET /api/v1/articles/drafts/:id" do
     subject { get(api_v1_articles_draft_path(article.id), headers: headers) }
 
     let(:current_user) { create(:user) }
