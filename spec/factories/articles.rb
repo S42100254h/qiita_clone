@@ -4,5 +4,13 @@ FactoryBot.define do
     body { Faker::Lorem.paragraph }
     status { "published" }
     user
+
+    trait :draft do
+      status { :draft }
+    end
+
+    trait :published do
+      status { :published }
+    end
   end
 end
