@@ -3,18 +3,23 @@
     <router-link to="/" class="header-link">
       <v-toolbar-title class="white--text font-weight-bold">Qiita</v-toolbar-title>
     </router-link>
-
-    <!-- <v-btn icon>
-      <v-icon>search</v-icon>
-    </v-btn>-->
-
     <v-spacer></v-spacer>
-
     <div v-if="isLoggedIn">
       <router-link to="/articles/new" class="header-link">
         <v-btn flat class="post font-weight-bold">投稿する</v-btn>
       </router-link>
-      <v-btn flat @click="logout" class="white--text font-weight-bold">ログアウト</v-btn>
+      <v-menu bottom left min-width="120">
+        <template v-slot:activator="{ on }">
+          <v-btn dark icon v-on="on">
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-tile v-for="(menu, i) in menus" :key="i" @click="undefined">
+            <v-list-tile-title @click="menu.click">{{ menu.title }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
     </div>
     <div v-else>
       <router-link to="/sign_up" class="header-link">
@@ -26,7 +31,6 @@
     </div>
   </v-toolbar>
 </template>
-
 <script lang="ts">
 import axios from "axios";
 import { Vue, Component } from "vue-property-decorator";
@@ -43,6 +47,32 @@ const headers = {
 @Component
 export default class Header extends Vue {
   isLoggedIn: boolean = !!localStorage.getItem("access-token");
+  items: any = [
+    { title: "Menu" },
+    { title: "Menu" },
+    { title: "Menu" },
+    { title: "Menu" }
+  ];
+  menus: any = [
+    {
+      title: "マイページ",
+      click: () => {
+        this.moveToMyPage();
+      }
+    },
+    {
+      title: "下書き一覧",
+      click: () => {
+        this.moveToDrafts();
+      }
+    },
+    {
+      title: "ログアウト",
+      click: () => {
+        this.logout();
+      }
+    }
+  ];
   async logout(): Promise<void> {
     await axios
       .delete("/api/v1/auth/sign_out", headers)
@@ -57,6 +87,13 @@ export default class Header extends Vue {
         this.refresh();
       });
   }
+  moveToMyPage(): void {
+    alert("マイページへ移動");
+    Router.push("/mypage");
+  }
+  moveToDrafts(): void {
+    Router.push("/articles/drafts");
+  }
   private refresh(): void {
     localStorage.clear();
     Router.push("/");
@@ -65,7 +102,6 @@ export default class Header extends Vue {
   }
 }
 </script>
-
 <style lang="scss" scoped>
 .header-link {
   text-decoration: none;
