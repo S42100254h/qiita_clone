@@ -15,12 +15,12 @@
     </div>
     <div class="text-xs-right">
       <v-btn
-        @click="createArticle('published')"
+        @click="createOrUpdateArticle('published')"
         color="#55c500"
         class="font-weight-bold white--text"
       >Qiitaに投稿</v-btn>
       <v-btn
-        @click="createArticle('drafttt')"
+        @click="createOrUpdateArticle('draft')"
         color="#55c500"
         class="font-weight-bold white--text"
       >下書き投稿</v-btn>
@@ -45,8 +45,16 @@ const headers = {
 };
 @Component
 export default class ArticlesContainer extends Vue {
+  id: string = "";
   title: string = "";
   body: string = "";
+
+  async mounted(): Promise<void> {
+    // only update
+    if (this.$route.params.id) {
+      await this.fetchArticle(this.$route.params.id);
+    }
+  }
 
   async created(): Promise<void> {
     const renderer = new marked.Renderer();
@@ -74,7 +82,20 @@ export default class ArticlesContainer extends Vue {
     };
   }
 
-    async createArticle(status: string): Promise<void> {
+    async fetchArticle(id: string): Promise<void> {
+    await axios
+      .get(`/api/v1/articles/${id}`)
+      .then(response => {
+        this.id = response.data.id;
+        this.title = response.data.title;
+        this.body = response.data.body;
+      })
+      .catch(e => {
+        // TODO: 適切な Error 表示
+        alert(e.response.statusText);
+      });
+  }
+  async createOrUpdateArticle(status: string): Promise<void> {
     enum Statuses {
       "draft" = "draft",
       "published" = "published"
@@ -86,6 +107,20 @@ export default class ArticlesContainer extends Vue {
       status: Statuses[status]
       };
 
+      if (this.id) {
+      // update
+      await axios
+        .patch(`/api/v1/articles/${this.id}`, params, headers)
+        .then(_response => {
+          // TODO: 下書きの場合は下書き一覧ページに飛ばす
+          Router.push("/");
+        })
+        .catch(e => {
+          // TODO: 適切な Error 表示
+          alert(e.response.data.errors);
+        });
+    } else {
+      // create
       await axios
         .post("/api/v1/articles", params, headers)
         .then(_response => {
@@ -96,6 +131,7 @@ export default class ArticlesContainer extends Vue {
           // TODO: 適切な Error 表示
           alert(e.response.data.errors);
         });
+    }
   }
 }
 </script>
