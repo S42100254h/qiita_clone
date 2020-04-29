@@ -4,15 +4,8 @@
       <span class="user-name">@{{ article.user.name }}</span>
       <time-ago :refresh="60" :datetime="article.updated_at" locale="en" tooltip="top" long></time-ago>
       <v-spacer></v-spacer>
-      <v-btn
-        fab
-        flat
-        dark
-        small
-        color="#55c500"
-        @click="moveToEditArticlePage(article.id)"
-        v-if="editable"
-      >
+      <v-spacer></v-spacer>
+      <v-btn fab flat dark small color="#55c500">
         <v-icon dark>edit</v-icon>
       </v-btn>
       <v-btn fab flat dark small color="#55c500" @click="confirmDeleteArticle">
@@ -35,7 +28,6 @@ import TimeAgo from "vue2-timeago";
 import marked from "marked";
 import hljs from "highlight.js";
 import Router from "../router/router";
-
 const headers = {
   headers: {
     Authorization: "Bearer",
@@ -45,7 +37,6 @@ const headers = {
     uid: localStorage.getItem("uid")
   }
 };
-
 @Component({
   components: {
     TimeAgo
@@ -56,20 +47,18 @@ export default class ArticleContainer extends Vue {
   async mounted(): Promise<void> {
     await this.fetchArticle(this.$route.params.id);
   }
-
   async created(): Promise<void> {
     const renderer = new marked.Renderer();
-     let data = "";
-     renderer.code = function(code, lang) {
-       const _lang = lang.split(".").pop();
+    let data = "";
+    renderer.code = function(code, lang) {
+      const _lang = lang.split(".").pop();
       try {
         data = hljs.highlight(_lang, code, true).value;
       } catch (e) {
         data = hljs.highlightAuto(code).value;
-       }
+      }
       return `<pre><code class="hljs"> ${data} </code></pre>`;
     };
-
     marked.setOptions({
       renderer: renderer,
       tables: true,
@@ -77,17 +66,14 @@ export default class ArticleContainer extends Vue {
       langPrefix: ""
     });
   }
-
   get compiledMarkdown() {
     return function(text: string) {
       return marked(text);
     };
   }
-
   get editable(): boolean {
     return localStorage.getItem("uid") === this.article.user.email;
   }
-
   async fetchArticle(id: string): Promise<void> {
     await axios
       .get(`/api/v1/articles/${id}`)
@@ -99,18 +85,16 @@ export default class ArticleContainer extends Vue {
         alert(e.response.statusText);
       });
   }
-  
   moveToEditArticlePage(id: string): void {
     Router.push(`/articles/${id}/edit`);
   }
-
   async confirmDeleteArticle(): Promise<void> {
-    const result = confirm("この記事を削除してもよろしいですか？")
+    const result = confirm("この記事を削除してもよろしいですか？");
     if (result) {
       await axios
         .delete(`/api/v1/articles/${this.article.id}`, headers)
         .then(_response => {
-          Router.push("/")
+          Router.push("/");
         })
         .catch(e => {
           // TODO: 適切な Error 表示
@@ -142,5 +126,4 @@ export default class ArticleContainer extends Vue {
 .user-name {
   margin-right: 1em;
 }
-
-</style> 
+</style>
