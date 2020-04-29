@@ -35,7 +35,6 @@ import axios from "axios";
 import { Vue, Component } from "vue-property-decorator";
 import TimeAgo from "vue2-timeago";
 import Router from "../router/router";
-
 const headers = {
   headers: {
     Authorization: "Bearer",
@@ -45,7 +44,6 @@ const headers = {
     uid: localStorage.getItem("uid")
   }
 };
-
 @Component({
   components: {
     TimeAgo
@@ -53,11 +51,9 @@ const headers = {
 })
 export default class DraftArticlesContainer extends Vue {
   articles: string[] = [];
-
   async mounted(): Promise<void> {
     await this.fetchArticles();
   }
-
   async fetchArticles(): Promise<void> {
     await axios.get("/api/v1/articles/drafts", headers).then(response => {
       response.data.map((article: any) => {
@@ -65,7 +61,6 @@ export default class DraftArticlesContainer extends Vue {
       });
     });
   }
-
   moveToEditPage(id: string) {
     Router.push(`/articles/drafts/${id}/edit`);
   }
